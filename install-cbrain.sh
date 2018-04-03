@@ -48,3 +48,24 @@ rake cbrain:plugins:install:all
 
 cd $HOME/cbrain/Bourreau
 rake cbrain:plugins:install:all
+
+#BrainPortal setup
+cd $HOME/cbrain/BrainPortal/config
+cp database.yml.TEMPLATE database.yml
+sed -i '0,/cbrain_db_name_here/s//cbrain/' database.yml
+sed -i '0,/cbrain_db_user_name_here/s//cbrain/' database.yml 
+sed -i "0,/cbrain_db_user_pw_here/s//$CBRAIN_SQL_PASS/" database.yml 
+
+cd $HOME/cbrain/BrainPortal/config/initializers
+cp config_portal.rb.TEMPLATE config_portal.rb
+echo "Type a name for the rails app:"
+read CBRAIN_APP_NAME
+sed -i "s/simple_name/$CBRAIN_APP_NAME/" config_portal.rb
+
+#BrainPortal rake tasks
+cd $HOME/cbrain/BrainPortal
+rake db:schema:load RAILS_ENV=production
+rake assets:precompile
+chomd -R go+rX public/assets
+rake db:seed RAILS_ENV=production
+rake db:sanity:check RAILS_ENV=production
