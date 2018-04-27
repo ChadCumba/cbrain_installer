@@ -64,8 +64,11 @@ sed -i "s/simple_name/$CBRAIN_APP_NAME/" config_portal.rb
 
 #BrainPortal rake tasks
 cd $HOME/cbrain/BrainPortal
-rake db:schema:load RAILS_ENV=production
+rake db:schema:load RAILS_ENV=development
 rake assets:precompile
-chomd -R go+rX public/assets
-rake db:seed RAILS_ENV=production
-rake db:sanity:check RAILS_ENV=production
+chmod -R go+rX public/assets
+rake db:seed RAILS_ENV=development
+rake db:sanity:check RAILS_ENV=development
+
+echo "remember to check mysql for the @@GLOBAL.sql_mode"
+echo "and make sure that only_full_group_by is NOT set"
